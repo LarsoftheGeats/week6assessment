@@ -3,6 +3,7 @@ const path = require('path')
 const app = express()
 const {bots, playerRecord} = require('./data')
 const {shuffleArray,home} = require('./utils')
+require('dotenv').config()
 
 app.use(express.json())
 
@@ -17,10 +18,12 @@ app.get('/api/robots', (req, res) => {
 
 var Rollbar = require('rollbar')
 var rollbar = new Rollbar({
-  accessToken: process.env.ROLLBARR_Key,
+  accessToken: process.env.ROLLBARR_KEY,
   captureUncaught: true,
   captureUnhandledRejections: true,
 })
+
+//rollbar.log("Hello world!");
 /*MiddleWare*/
 app.get('/', (req,res) =>  {
     res.sendFile(path.join( __dirname, "./public/index.html"))  
