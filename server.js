@@ -29,8 +29,12 @@ app.get('/', (req,res) =>  {
     res.sendFile(path.join( __dirname, "./public/index.html"))  
     rollbar.log("page served")
 })//serve home page
-app.get('/styles', (req,res) => res.sendFile(path.join( __dirname, "./public/index.css"))  )//serve home page
-app.get('/js', (req,res) => res.sendFile(path.join( __dirname, "./public/index.js"))  )//serve home page
+app.get('/styles', (req,res) => 
+{res.sendFile(path.join( __dirname, "./public/index.css")) 
+rollbar.log("css served")} )//serve home page
+app.get('/js', (req,res) => {
+res.sendFile(path.join( __dirname, "./public/index.js"))  
+rollbar.log("js served")})//serve home page
 
 app.get('/api/robots/five', (req, res) => {
     try {
@@ -38,6 +42,7 @@ app.get('/api/robots/five', (req, res) => {
         let choices = shuffled.slice(0, 5)
         let compDuo = shuffled.slice(6, 8)
         res.status(200).send({choices, compDuo})
+        rollbar.log("robots sent")
     } catch (error) {
         console.log('ERROR GETTING FIVE BOTS', error)
         rollbar.error("Robots not sent")
@@ -81,7 +86,7 @@ app.post('/api/duel', (req, res) => {
 app.get('/api/player', (req, res) => {
     try {
         res.status(200).send(playerRecord)
-        rollbar.info("player records sent")
+        rollbar.log("player records sent")
     } catch (error) {
         console.log('ERROR GETTING PLAYER STATS', error)
         rollbar.error("ERROR GETTING PLAYER STATS")
