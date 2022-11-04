@@ -14,8 +14,18 @@ app.get('/api/robots', (req, res) => {
         res.sendStatus(400)
     }
 })
+
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: process.env.ROLLBARR_Key,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
 /*MiddleWare*/
-app.get('/', (req,res) => res.sendFile(path.join( __dirname, "./public/index.html"))  )//serve home page
+app.get('/', (req,res) =>  {
+    res.sendFile(path.join( __dirname, "./public/index.html"))  
+    rollbar.log("page served")
+})//serve home page
 app.get('/styles', (req,res) => res.sendFile(path.join( __dirname, "./public/index.css"))  )//serve home page
 app.get('/js', (req,res) => res.sendFile(path.join( __dirname, "./public/index.js"))  )//serve home page
 
@@ -27,6 +37,7 @@ app.get('/api/robots/five', (req, res) => {
         res.status(200).send({choices, compDuo})
     } catch (error) {
         console.log('ERROR GETTING FIVE BOTS', error)
+        rollbar.error("Robots not sent")
         res.sendStatus(400)
     }
 })
@@ -56,8 +67,10 @@ app.post('/api/duel', (req, res) => {
             playerRecord.losses++
             res.status(200).send('You won!')
         }
+        rollbar.info("succesfful duel")
     } catch (error) {
         console.log('ERROR DUELING', error)
+        rollbar.error("Duel failed")
         res.sendStatus(400)
     }
 })
@@ -65,8 +78,10 @@ app.post('/api/duel', (req, res) => {
 app.get('/api/player', (req, res) => {
     try {
         res.status(200).send(playerRecord)
+        rollbar.info("player records sent")
     } catch (error) {
         console.log('ERROR GETTING PLAYER STATS', error)
+        rollbar.error("ERROR GETTING PLAYER STATS")
         res.sendStatus(400)
     }
 })
@@ -74,5 +89,6 @@ app.get('/api/player', (req, res) => {
 const port = process.env.PORT || 3000
 
 app.listen(port, () => {
+    rollbar.info("server launched")
   console.log(`Listening on port ${port}`)
 })

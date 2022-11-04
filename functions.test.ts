@@ -7,7 +7,7 @@ describe('shuffleArray should', () => {
         let arr=[0,1,2,3,4,8,9,10]
     
         let returnArr = shuffleArray(arr)
-        expect(Array.isArray(returnArr))
+        expect(Array.isArray(returnArr)).toBe(true)
     })
     
     test('Array returned an Array of the same length' , async () => {
